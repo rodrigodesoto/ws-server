@@ -14,45 +14,27 @@ const wss = appWs(server);
 
 setInterval(async () => {
     // let carteira = [];
-    // for (let i = 0; i < Object.keys(tickerEnum).length; i++) {
-    //     await fetch('https://brapi.dev/api/quote/' + Object.keys(tickerEnum)[i], {
-    //         method: 'GET', // or 'PUT'
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: null,
-    //     })
-    //         .then((response) => response.json())
-    //         .then((data) => {
-    //             console.log('Success:', data);
-    //             carteira.push({ticker: Object.keys(tickerEnum)[i].toString(), quote: data.results[0]})
-    //         })
-    //         .catch((error) => {
-    //             console.error('Error:', error);
-    //         });
-    // }
+    for (let i = 0; i < Object.keys(tickerEnum).length; i++) {
+        await getCurrentQuote(Object.keys(tickerEnum)[i].toString(), await function(err, quote){
+            // quote.price = Math.random().toPrecision(2)
+            if(quote){
+                console.log({id: i, ticker: Object.keys(tickerEnum)[i].toString(), quote: quote});
+                wss.broadcast({ id: i, ticker: Object.keys(tickerEnum)[i].toString() , quote: quote });
+            }
+            // carteira.push({ticker: Object.keys(tickerEnum)[i].toString(), quote: quote});
+        });
+    }
     // if (carteira.length === Object.keys(tickerEnum).length) {
+    //     console.log(carteira);
     //     wss.broadcast(carteira);
     // } else {
     //     carteira = [];
     // }
 
-    // cotacoesBovespa.getCurrentQuote('PRIO3', function(err, quote){
-    //     // quote.price = Math.random().toPrecision(2)
-    //     wss.broadcast({ ticker: 'PRIO3' , quote: quote });
-    //     console.log(quote);
-    // });
-
-    this.getCurrentQuote('PRIO3', function(err, quote){
-            // quote.price = Math.random().toPrecision(2)
-            wss.broadcast({ ticker: 'PRIO3' , quote: quote });
-            console.log(quote);
-        });
-
-}, 5000);
+}, 30000);
 
 
-module.exports.getCurrentQuote = function (ticker, callback) {
+async function getCurrentQuote(ticker, callback) {
     request("https://finance.yahoo.com/quote/" + ticker + ".sa/", function (
         err,
         res,
