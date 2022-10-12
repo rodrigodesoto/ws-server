@@ -1,7 +1,6 @@
 const app = require('./app');
 const appWs = require('./app-ws');
 var tickerEnum = require('./ticker-enum');
-var request = require("request");
 var fetch = require("node-fetch");
 
 const server = app.listen(process.env.PORT || 3000, () => {
@@ -16,14 +15,14 @@ setInterval(async () => {
         for (let i = 0; i < Object.keys(tickerEnum).length; i++) {
             await getCurrentQuote(Object.keys(tickerEnum)[i].toString(), await function(err, quote){
                 if(quote){
-                    console.log({id: i, ticker: Object.keys(tickerEnum)[i].toString(), quote: quote});
                     wss.broadcast({ id: i, ticker: Object.keys(tickerEnum)[i].toString() , quote: quote });
+                    console.log({id: i, ticker: Object.keys(tickerEnum)[i].toString(), quote: quote});
                 }
             });
         }
         processoIniciado = false;
     }
-}, 60000);
+}, 30000);
 
 
 async function getCurrentQuote(ticker, callback) {
