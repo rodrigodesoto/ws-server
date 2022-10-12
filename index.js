@@ -1,49 +1,34 @@
-//responsável por subir nosso servidor
 const app = require('./app');
 const appWs = require('./app-ws');
-// var cotacoesBovespa = require('cotacoes-bovespa');
 var tickerEnum = require('./ticker-enum');
-var fetch = require('node-fetch');
 var request = require("request");
+var fetch = require("node-fetch");
 
 const server = app.listen(process.env.PORT || 3000, () => {
     console.log(`App Express is running!`);
 })
 
 const wss = appWs(server);
-
+let processoIniciado = false;
 setInterval(async () => {
-    // let carteira = [];
-    for (let i = 0; i < Object.keys(tickerEnum).length; i++) {
-        await getCurrentQuote(Object.keys(tickerEnum)[i].toString(), await function(err, quote){
-            // quote.price = Math.random().toPrecision(2)
-            if(quote){
-                console.log({id: i, ticker: Object.keys(tickerEnum)[i].toString(), quote: quote});
-                wss.broadcast({ id: i, ticker: Object.keys(tickerEnum)[i].toString() , quote: quote });
-            }
-            // carteira.push({ticker: Object.keys(tickerEnum)[i].toString(), quote: quote});
-        });
+    if(processoIniciado == false){
+        processoIniciado = true;
+        for (let i = 0; i < Object.keys(tickerEnum).length; i++) {
+            await getCurrentQuote(Object.keys(tickerEnum)[i].toString(), await function(err, quote){
+                if(quote){
+                    console.log({id: i, ticker: Object.keys(tickerEnum)[i].toString(), quote: quote});
+                    wss.broadcast({ id: i, ticker: Object.keys(tickerEnum)[i].toString() , quote: quote });
+                }
+            });
+        }
+        processoIniciado = false;
     }
-    // if (carteira.length === Object.keys(tickerEnum).length) {
-    //     console.log(carteira);
-    //     wss.broadcast(carteira);
-    // } else {
-    //     carteira = [];
-    // }
-
-}, 30000);
+}, 60000);
 
 
 async function getCurrentQuote(ticker, callback) {
-    request("https://finance.yahoo.com/quote/" + ticker + ".sa/", function (
-        err,
-        res,
-        body
-    ) {
-        if (err) {
-            callback(err);
-        }
-
+    const response = await fetch("https://finance.yahoo.com/quote/" + ticker + ".sa/")
+    const body = await response.text();
         const main = JSON.parse(
             body.split("root.App.main = ")[1].split(";\n}(this));")[0]
         );
@@ -88,5 +73,4 @@ async function getCurrentQuote(ticker, callback) {
         }
 
         callback(null, quote);
-    });
 };
