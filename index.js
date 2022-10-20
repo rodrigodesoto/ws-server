@@ -8,10 +8,8 @@ const server = app.listen(process.env.PORT || 3000, () => {
 })
 
 const wss = appWs(server);
-let processoIniciado = false;
 setInterval(async () => {
-    if(processoIniciado == false){
-        processoIniciado = true;
+    try {
         for (let i = 0; i < Object.keys(tickerEnum).length; i++) {
             await getCurrentQuote(Object.keys(tickerEnum)[i].toString(), await function(err, quote){
                 if(quote){
@@ -20,9 +18,10 @@ setInterval(async () => {
                 }
             });
         }
-        processoIniciado = false;
+    } catch (error) {
+        return error;
     }
-}, 30000);
+}, 5000);
 
 
 async function getCurrentQuote(ticker, callback) {
@@ -41,6 +40,7 @@ async function getCurrentQuote(ticker, callback) {
                 main.context.dispatcher.stores.QuoteSummaryStore.financialData
                     .currentPrice.fmt
             );
+            // quote.price = quote.price + Math.random()
             quote.open = parseFloat(
                 main.context.dispatcher.stores.QuoteSummaryStore.price.regularMarketOpen
                     .fmt
