@@ -23,7 +23,6 @@ setInterval(async () => {
     }
 }, 5000);
 
-
 async function getCurrentQuote(ticker, callback) {
     const response = await fetch("https://finance.yahoo.com/quote/" + ticker + ".sa/")
     const body = await response.text();
