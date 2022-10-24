@@ -21,7 +21,7 @@ setInterval(async () => {
     } catch (error) {
         return error;
     }
-}, 5000);
+}, 60000);
 
 async function getCurrentQuote(ticker, callback) {
     const response = await fetch("https://finance.yahoo.com/quote/" + ticker + ".sa/")
