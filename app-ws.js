@@ -27,8 +27,7 @@ function broadcast(jsonObject) {
 }
 
 function corsValidation(origin) {
-    console.log("origin: "+origin)
-    return process.env.CORS_ORIGIN === '*');
+    return process.env.CORS_ORIGIN === '*';
 }
 
 function verifyClient(info, callback) {
