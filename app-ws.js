@@ -32,6 +32,7 @@ function corsValidation(origin) {
 
 function verifyClient(info, callback) {
     console.log("info: "+info.origin)
+
     if (!corsValidation(info.origin)) return callback(false);
 
     const token = info.req.url.split('token=')[1];
