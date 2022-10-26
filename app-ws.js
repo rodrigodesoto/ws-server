@@ -27,7 +27,15 @@ function broadcast(jsonObject) {
 }
 
 function corsValidation(origin) {
-    return process.env.CORS_ORIGIN === '*' || process.env.CORS_ORIGIN.startsWith(origin);
+    if(origin){
+        if(process?.env?.CORS_ORIGIN){
+            return process.env.CORS_ORIGIN === '*' || process.env.CORS_ORIGIN.startsWith(origin);
+        }else{
+            return true;
+        }
+    }else{
+        return true;
+    }
 }
 
 function verifyClient(info, callback) {
