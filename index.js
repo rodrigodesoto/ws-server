@@ -62,7 +62,7 @@ async function getCurrentQuote(ticker, callback) {
             );
             quote.marketChange = parseFloat(
                 main.context.dispatcher.stores.QuoteSummaryStore.price
-                    .regularMarketChange.fmt
+                    .regularMarketChangePercent.fmt
             );
             quote.shortName =
                 main.context.dispatcher.stores.QuoteSummaryStore.price.shortName;
