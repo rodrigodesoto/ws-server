@@ -37,7 +37,7 @@ async function getCurrentQuote(ticker, callback) {
             quote.low = quoteTicker.price.regularMarketDayLow;
             quote.previousClose = quoteTicker.price.regularMarketPreviousClose;
             quote.volume = quoteTicker.summaryDetail.averageVolume;
-            quote.marketChange = quoteTicker.price.regularMarketChangePercent*100;
+            quote.marketChange = parseFloat(quoteTicker.price.regularMarketChangePercent*100).toPrecision(2);
             quote.shortName = quoteTicker.price.shortName;
             quote.longName = quoteTicker.price.longName;
         }
