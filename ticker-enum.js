@@ -8,7 +8,6 @@ const tickerEnum = {
     ELET3 :	'ELET3',
     B3SA3 :	'B3SA3',
     TGMA3 :	'TGMA3',
-    MOVI3 :	'MOVI3',
     ARZZ3 :	'ARZZ3',
     VIVT3 :	'VIVT3',
     CSMG3 :	'CSMG3',
