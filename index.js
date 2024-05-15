@@ -22,7 +22,7 @@ setInterval(async () => {
     } catch (error) {
         return error;
     }
-}, 10000);
+}, 60000);
 
 async function getCurrentQuote(ticker, callback) {
     try {
