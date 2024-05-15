@@ -15,7 +15,7 @@ setInterval(async () => {
             await getCurrentQuote(Object.keys(tickerEnum)[i].toString(), await function(err, quote){
                 if(quote){
                     wss.broadcast({ id: i, ticker: Object.keys(tickerEnum)[i].toString() , quote: quote });
-                    console.log({id: i, ticker: Object.keys(tickerEnum)[i].toString(), quote: quote});
+                    // console.log({id: i, ticker: Object.keys(tickerEnum)[i].toString(), quote: quote});
                 }
             });
         }
@@ -46,11 +46,11 @@ async function getCurrentQuote(ticker, callback) {
           res.on('end', () => {
             const jsonData = JSON.parse(data);
             const quoteTicker = jsonData.results[0];
-            console.log(jsonData);
+            // console.log(jsonData);
   
             let quote = {}
   
-            console.log(quoteTicker);
+            // console.log(quoteTicker);
             if (quoteTicker !== undefined) {
                 quote.price = quoteTicker.regularMarketPrice;
                 // quote.price = quote.price + Math.random()
