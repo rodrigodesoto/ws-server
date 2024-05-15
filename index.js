@@ -1,7 +1,8 @@
 const app = require('./app');
 const appWs = require('./app-ws');
 var tickerEnum = require('./ticker-enum');
-const yahooFinance = require ('yahoo-finance2').default;
+const url = '/api/quote/';
+const https = require('https');
 
 const server = app.listen(process.env.PORT || 3000, () => {
     console.log(`App Express is running!`);
@@ -25,25 +26,53 @@ setInterval(async () => {
 
 async function getCurrentQuote(ticker, callback) {
     try {
-        let quote = {}
-        const queryOptions = { modules: ['price', 'summaryDetail'] }; // defaults
-        const quoteTicker = await yahooFinance.quoteSummary(ticker+'.SA', queryOptions);
-        console.log(quoteTicker);
-        if (quoteTicker !== undefined) {
-            quote.price = quoteTicker.price.regularMarketPrice;
-            // quote.price = quote.price + Math.random()
-            quote.open = quoteTicker.price.regularMarketOpen;
-            quote.high = quoteTicker.price.regularMarketDayHigh;
-            quote.low = quoteTicker.price.regularMarketDayLow;
-            quote.previousClose = quoteTicker.price.regularMarketPreviousClose;
-            quote.volume = quoteTicker.summaryDetail.averageVolume;
-            quote.marketChange = parseFloat(quoteTicker.price.regularMarketChangePercent*100).toPrecision(2);
-            quote.shortName = quoteTicker.price.shortName;
-            quote.longName = quoteTicker.price.longName;
-        }
 
-        callback(null, quote);
-    } catch (error) {
-        return error;
-    }
+        const options = {
+          headers: {
+            'Authorization': 'Bearer fS28BGD8uZPgqCS8vRfrwB'
+          },
+          method: 'GET',
+          hostname: 'brapi.dev',
+          path: url+ticker
+        };
+  
+        const req = await https.request(options, (res) => {
+          let data = '';
+         
+          res.on('data', (chunk) => {
+            data += chunk;
+          });
+         
+          res.on('end', () => {
+            const jsonData = JSON.parse(data);
+            const quoteTicker = jsonData.results[0];
+            console.log(jsonData);
+  
+            let quote = {}
+  
+            console.log(quoteTicker);
+            if (quoteTicker !== undefined) {
+                quote.price = quoteTicker.regularMarketPrice;
+                // quote.price = quote.price + Math.random()
+                quote.open = quoteTicker.regularMarketOpen;
+                quote.high = quoteTicker.regularMarketDayHigh;
+                quote.low = quoteTicker.regularMarketDayLow;
+                quote.previousClose = quoteTicker.regularMarketPreviousClose;
+                quote.volume = quoteTicker.regularMarketVolume
+                quote.marketChange = parseFloat(quoteTicker.regularMarketChangePercent).toPrecision(2);
+                quote.shortName = quoteTicker.shortName;
+                quote.longName = quoteTicker.longName;
+            }
+    
+            callback(null, quote);
+          }).on('error', (err) => {
+            console.error('Erro ao fazer requisição:', err);
+          });
+        });
+         
+        req.end();
+        
+      } catch (error) {
+          return error;
+      }
 };
