@@ -1,78 +1,53 @@
 const app = require('./app');
 const appWs = require('./app-ws');
-var tickerEnum = require('./ticker-enum');
-const url = '/api/quote/';
-const https = require('https');
+const tickerEnum = require('./ticker-enum');
+const pageScraper = require('./pageScraper');
+let executando = false;
 
 const server = app.listen(process.env.PORT || 3000, () => {
     console.log(`App Express is running!`);
 })
 
 const wss = appWs(server);
-setInterval(async () => {
-    try {
-        for (let i = 0; i < Object.keys(tickerEnum).length; i++) {
-            await getCurrentQuote(Object.keys(tickerEnum)[i].toString(), await function(err, quote){
-                if(quote){
-                    wss.broadcast({ id: i, ticker: Object.keys(tickerEnum)[i].toString() , quote: quote });
-                    // console.log({id: i, ticker: Object.keys(tickerEnum)[i].toString(), quote: quote});
-                }
-            });
-        }
-    } catch (error) {
-        return error;
-    }
-}, 10000);
 
-async function getCurrentQuote(ticker, callback) {
-    try {
 
-        const options = {
-          headers: {
-            'Authorization': 'Bearer fS28BGD8uZPgqCS8vRfrwB'
-          },
-          method: 'GET',
-          hostname: 'brapi.dev',
-          path: url+ticker
-        };
-  
-        const req = await https.request(options, (res) => {
-          let data = '';
-         
-          res.on('data', (chunk) => {
-            data += chunk;
-          });
-         
-          res.on('end', () => {
-            const jsonData = JSON.parse(data);
-            const quoteTicker = jsonData.results[0];
-            // console.log(jsonData);
-  
-            let quote = {}
-  
-            // console.log(quoteTicker);
-            if (quoteTicker !== undefined) {
-                quote.price = quoteTicker.regularMarketPrice;
-                // quote.price = quote.price + Math.random()
-                quote.open = quoteTicker.regularMarketOpen;
-                quote.high = quoteTicker.regularMarketDayHigh;
-                quote.low = quoteTicker.regularMarketDayLow;
-                quote.previousClose = quoteTicker.regularMarketPreviousClose;
-                quote.volume = quoteTicker.regularMarketVolume
-                quote.marketChange = parseFloat(quoteTicker.regularMarketChangePercent).toPrecision(2);
-                quote.shortName = quoteTicker.shortName;
-                quote.longName = quoteTicker.longName;
+async function main() {
+
+    if(!executando){
+        executando = true;
+        try {   
+           const startTime = Date.now();
+           let endTime;
+           const  tickets = await pageScraper.scraper(tickerEnum);
+
+            if(tickets.name != 'ProtocolError' && tickets.name != 'TimeoutError'){
+
+                    for (let i = 0; i < Object.keys(tickets).length; i++) {
+                        setInterval(async () => {
+                            wss.broadcast({ id: i, ticker: tickets[i].ticket , quote: tickets[i] });
+                            // console.log({id: i, ticker: Object.keys(tickerEnum)[i].toString(), quote: quote});
+                        }, 3000);
+                    }
+                endTime = Date.now();
+                const timeTaken = endTime - startTime;
+                executando = false;
+                console.log(tickets);
+                console.log(`Tempo total de execução: ${timeTaken/1000} s`);
+            } else {
+                endTime = Date.now();
+                const timeTaken = endTime - startTime;
+                console.log(`Tempo total de execução: ${timeTaken/1000} s`);
+                throw new Error(tickets);
             }
-    
-            callback(null, quote);
-          }).on('error', (err) => {
-            console.error('Erro ao fazer requisição:', err);
-          });
-        });
-         
-        req.end();
-        
-      } catch (error) {
-          return error;
-      }
+            
+        } catch (error) {
+            executando = false;
+            console.log(error.stack);
+            return error;
+        }
+    }
 };
+
+setInterval(async () => {
+    main();
+}, 5000);

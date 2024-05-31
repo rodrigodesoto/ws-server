@@ -1,18 +1,15 @@
 const tickerEnum = {
-    PRIO3 :	'PRIO3',
-    LAND3 :	'LAND3',
-    SLCE3 :	'SLCE3',
-    LUPA3 :	'LUPA3',
-    FHER3 :	'FHER3',
-    RAPT4 :	'RAPT4',
-    ELET3 :	'ELET3',
-    B3SA3 :	'B3SA3',
-    TGMA3 :	'TGMA3',
-    ARZZ3 :	'ARZZ3',
-    VIVT3 :	'VIVT3',
-    CSMG3 :	'CSMG3',
-    CPFE3 :	'CPFE3',
-    BBAS3 :	'BBAS3',
+    PRIO3 :	'hrt-petroleo-on-nm',
+    RAPT4 :	'randon-part-pn-n1',
+    ELET3 :	'eletrobras-on',
+    B3SA3 :	'brasil-on',
+    TGMA3 :	'tegma-on-nm',
+    CSMG3 :	'copasa-on',
+    CPFE3 :	'cpfl-energia-on-nm',
+    VIVT3 :	'telef-brasil-on',
+    FHER3 :	'fer-heringer-on-nm',
+    LUPA3 :	'lupatech-on-nm',
+    SLCE3 :	'slc-agricola-on-nm'
 }
 
 module.exports = tickerEnum;

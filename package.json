@@ -16,9 +16,8 @@
     "gitignore": "^0.7.0",
     "helmet": "^5.0.2",
     "morgan": "^1.10.0",
-    "node-fetch": "^2.6.7",
-    "request": "^2.88.2",
-    "ws": "^8.5.0",
-    "yahoo-finance2": "^2.3.10"
+    "cheerio": "^1.0.0-rc.12",
+    "puppeteer": "^19.3.0",
+    "ws": "^8.5.0"
   }
 }
