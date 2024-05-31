@@ -10,7 +10,6 @@ const server = app.listen(process.env.PORT || 3000, () => {
 
 const wss = appWs(server);
 
-
 async function main() {
 
     if(!executando){
