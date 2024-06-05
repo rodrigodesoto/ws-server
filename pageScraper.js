@@ -43,7 +43,7 @@ const scraperObject = {
                 quote['open'] = valueOpen;
                 quote['low'] = valueMin;
                 quote['high'] = valueMax;
-                quote['stateTrading'] = stateTrading;
+                quote['stateTrading'] = stateTrading.replace('Dados em ','');
                 quote['timeTrading'] = timeTrading;
     
                 arrTickets.push(quote);
