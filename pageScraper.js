@@ -29,8 +29,9 @@ const scraperObject = {
                 const valuePercent = await page.$eval('[data-test="instrument-price-change-percent"]', element => element.textContent.trim().replace('(', '').replace(')', ''));
                 const valueOpen = await page.$eval('[data-test="open"]', element => element.textContent.trim());
                 const dailyValueRange = await page.$eval('[data-test="dailyRange"]', element => element.textContent.trim());
-                const valueMin = dailyValueRange.substring(0, 4);
-                const valueMax = dailyValueRange.substring(dailyValueRange.length - 5, dailyValueRange.length);
+                const traço = dailyValueRange.indexOf('-');
+                const valueMin = dailyValueRange.substring(0, traço).trim();
+                const valueMax = dailyValueRange.substring(traço+1, dailyValueRange.length).trim();
                 const stateTrading = await page.$eval('[data-test="trading-state-label"]', element => element.textContent.trim());
                 const timeTrading = await page.$eval('[data-test="trading-time-label"]', element => element.textContent.trim());
     
