@@ -4,6 +4,7 @@ const tickerEnum = {
     ELET3 :	'eletrobras-on',
     B3SA3 :	'bmfbovespa-on-nm',
     TGMA3 :	'tegma-on-nm',
+    BBAS3 :	'brasil-on',
     CSMG3 :	'copasa-on',
     CPFE3 :	'cpfl-energia-on-nm',
     VIVT3 :	'telef-brasil-on',
