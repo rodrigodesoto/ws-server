@@ -51,8 +51,8 @@ const scraperObject = {
                 // const traço = dailyValueRange.indexOf('-');
                 const valueMin = await page.$eval('#quoteElementPiece13', element => element.textContent.trim());
                 const valueMax = await page.$eval('#quoteElementPiece14', element => element.textContent.trim());
-                const stateTrading = await page.$eval('#quote-header > div > div.price-container > div.delayed-indicator > div > a > div', element => element.textContent.trim());
-                const timeTrading = await page.$eval('#quote-header > div > div.price-container > div.delayed-indicator > div > div > span', element => element.textContent.trim());
+                const stateTrading = await page.$eval('#quote-header > div > div.price-container > div.delayed-indicator > div > a > div', element => element.textContent.trim().replace('Atrasado em ', '').replace('minutos', 'min'));
+                const timeTrading = await page.$eval('#quoteElementPiece11', element => element.textContent.trim().substring(0,5));
     
                 let quote  = {};
                 quote['ticket'] = Object.keys(tickets)[i].toString();
