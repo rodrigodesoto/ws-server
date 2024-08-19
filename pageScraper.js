@@ -22,7 +22,7 @@ const scraperObject = {
 
             // Navega para a URL especificada
             await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36')
-            await page.goto(urlLogin, {waitUntil: "load", timeout: 0})
+            await page.goto(urlLogin, {waitUntil: "load", timeout: 60000 })
             await sleep(2000)
             await page.waitForSelector('#afnmainbodid > div > div.content-row.login-page.row.w-100.m-0 > div.content-column-left.col-xl-6.col-lg-12.left.white-background.d-flex.flex-row-reverse > div > form > div:nth-child(2) > input');
             await page.type('#afnmainbodid > div > div.content-row.login-page.row.w-100.m-0 > div.content-column-left.col-xl-6.col-lg-12.left.white-background.d-flex.flex-row-reverse > div > form > div:nth-child(2) > input', usuario, {delay: 185});
@@ -47,7 +47,7 @@ const scraperObject = {
                 // Captura o valor do elemento
                 const name = await page.$eval(elementoBase+'div.ste-header > div > div.name-container > h3 > span.title-name', element => element.textContent.trim());
                 const valuePrice = await page.$eval(elementoBaseContainer+' > div.price-info > div > div.price-block.heading-2xl > span', element => element.textContent.trim());
-                const valuePercent = await page.$eval(elementoBaseContainer+' > div.price-info > div > div.change-block.main-values > div > span', element => element.textContent.trim().replace('(', '').replace(')', ''));
+                const valuePercent = await page.$eval(elementoBaseContainer+' > div.price-info > div > div.change-block.main-values > div > span', element => element.textContent.trim().replace('(', '').replace(')', '').replace('%', ''));
                 const campo = await page.$eval('#afnmainbodid > div.exchanges-page-container > div.two-col-row > div.col-one > div:nth-child(3) > div:nth-child(1) > div.delight-bordered-content > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(1)', element => element.textContent.trim());
                 let valueOpen = '';
 
