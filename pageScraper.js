@@ -40,19 +40,27 @@ const scraperObject = {
                 await page.goto('https://br.advfn.com/bolsa-de-valores/bovespa/'+tickerConversion+'/cotacao', { waitUntil: 'domcontentloaded' });
     
                 // Aguarda que o elemento esteja disponível na página
-                await page.waitForSelector('#quote-header > div > div.price-container');
-    
+                const elementoBase = '#afnmainbodid > div:nth-child(10) > div.quote-header-container > div.quote-header-left > div > div > ';
+                const elementoBaseContainer = elementoBase+'div.price-info-container';
+                await page.waitForSelector(elementoBase+'div.price-info-container > div.price-info > div');
+               
                 // Captura o valor do elemento
-                const name = await page.$eval('#quote-header > div > div.flex-container.mt-2.mb-3 > div.ml-2 > h1 > span.ticker', element => element.textContent.trim());
-                const valuePrice = await page.$eval('#quote-header > div > div.price-container > div.price-info > span', element => element.textContent.trim());
-                const valuePercent = await page.$eval('#quote-header > div > div.price-container > div.price-info > div > span:nth-child(3)', element => element.textContent.trim().replace('(', '').replace(')', ''));
-                const valueOpen = await page.$eval('#quoteElementPiece12', element => element.textContent.trim());
-                // const dailyValueRange = await page.$eval('[data-test="dailyRange"]', element => element.textContent.trim());
-                // const traço = dailyValueRange.indexOf('-');
-                const valueMin = await page.$eval('#quoteElementPiece13', element => element.textContent.trim());
-                const valueMax = await page.$eval('#quoteElementPiece14', element => element.textContent.trim());
-                const stateTrading = await page.$eval('#quote-header > div > div.price-container > div.delayed-indicator > div > a > div', element => element.textContent.trim().replace('Atrasado em ', '').replace('minutos', 'min'));
-                const timeTrading = await page.$eval('#quoteElementPiece11', element => element.textContent.trim().substring(0,5));
+                const name = await page.$eval(elementoBase+'div.ste-header > div > div.name-container > h3 > span.title-name', element => element.textContent.trim());
+                const valuePrice = await page.$eval(elementoBaseContainer+' > div.price-info > div > div.price-block.heading-2xl > span', element => element.textContent.trim());
+                const valuePercent = await page.$eval(elementoBaseContainer+' > div.price-info > div > div.change-block.main-values > div > span', element => element.textContent.trim().replace('(', '').replace(')', ''));
+                const campo = await page.$eval('#afnmainbodid > div.exchanges-page-container > div.two-col-row > div.col-one > div:nth-child(3) > div:nth-child(1) > div.delight-bordered-content > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(1)', element => element.textContent.trim());
+                let valueOpen = '';
+
+                if (campo.startsWith('Preço Anterior')) {
+                    valueOpen = await page.$eval('#afnmainbodid > div.exchanges-page-container > div.two-col-row > div.col-one > div:nth-child(3) > div:nth-child(1) > div.delight-bordered-content > div > div:nth-child(2) > div:nth-child(3) > div.text-bold.text-default-primary', element => element.textContent.trim());
+                } else {
+                    valueOpen = await page.$eval('#afnmainbodid > div.exchanges-page-container > div.two-col-row > div.col-one > div:nth-child(3) > div > div.delight-bordered-content > div > div:nth-child(2) > div:nth-child(2) > div.text-bold.text-default-primary', element => element.textContent.trim());
+                }
+
+                const valueMin = await page.$eval('#afnmainbodid > div.exchanges-page-container > div.two-col-row > div.col-one > div:nth-child(3) > div:nth-child(1) > div.delight-bordered-content > div > div:nth-child(1) > div:nth-child(5) > div.range-labels.body-m.text-default-primary > span:nth-child(1)', element => element.textContent.trim());
+                const valueMax = await page.$eval('#afnmainbodid > div.exchanges-page-container > div.two-col-row > div.col-one > div:nth-child(3) > div:nth-child(1) > div.delight-bordered-content > div > div:nth-child(1) > div:nth-child(5) > div.range-labels.body-m.text-default-primary > span:nth-child(3)', element => element.textContent.trim());
+                const stateTrading = await page.$eval(elementoBaseContainer+' > div.price-info > div > div.description-block > div > a', element => element.textContent.trim().replace('Atrasado por ', '').replace('minutos', 'min'));
+                const timeTrading = await page.$eval(elementoBaseContainer+' > div.price-info > div > div.description-block > span', element => element.textContent.trim().substring(0,5));
     
                 let quote  = {};
                 quote['ticket'] = Object.keys(tickets)[i].toString();
