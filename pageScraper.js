@@ -6,14 +6,14 @@ const scraperObject = {
         let senha = 'advfn77*'
         const urlLogin = 'https://br.advfn.com/common/account/login'
 
+        // Inicia o navegador
+        const browser = await puppeteer.launch({
+            headless: true,
+            args: ['--no-sandbox','--disable-setuid-sandbox']
+            })
+
         try{ 
             let arrTickets = [];
-            
-            // Inicia o navegador
-            const browser = await puppeteer.launch({
-                headless: true,
-                args: ['--no-sandbox','--disable-setuid-sandbox']
-              })
 
             // Abre uma nova página
             const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -22,7 +22,7 @@ const scraperObject = {
 
             // Navega para a URL especificada
             await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36')
-            await page.goto(urlLogin, {waitUntil: "load", timeout: 60000 })
+            await page.goto(urlLogin, {waitUntil: 'load', timeout: 60000 })
             await sleep(2000)
             await page.waitForSelector('#afnmainbodid > div > div.content-row.login-page.row.w-100.m-0 > div.content-column-left.col-xl-6.col-lg-12.left.white-background.d-flex.flex-row-reverse > div > form > div:nth-child(2) > input');
             await page.type('#afnmainbodid > div > div.content-row.login-page.row.w-100.m-0 > div.content-column-left.col-xl-6.col-lg-12.left.white-background.d-flex.flex-row-reverse > div > form > div:nth-child(2) > input', usuario, {delay: 185});
@@ -82,6 +82,11 @@ const scraperObject = {
             executando = false;
             console.log(error);
             return error;
+        } finally {
+            if (browser) {
+                await browser.close();
+            }
+            executando = false;
         }
     }
 }

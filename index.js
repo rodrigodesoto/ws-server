@@ -22,10 +22,7 @@ async function main() {
             if(tickets.name != 'ProtocolError' && tickets.name != 'TimeoutError'){
 
                     for (let i = 0; i < Object.keys(tickets).length; i++) {
-                        setInterval(async () => {
-                            wss.broadcast({ id: i, ticker: tickets[i].ticket , quote: tickets[i] });
-                            // console.log({id: i, ticker: Object.keys(tickerEnum)[i].toString(), quote: quote});
-                        }, 3000);
+                        broadcastData(i, tickets);
                     }
                 endTime = Date.now();
                 const timeTaken = endTime - startTime;
@@ -46,6 +43,11 @@ async function main() {
         }
     }
 };
+
+async function broadcastData(i, tickets) {
+    wss.broadcast({ id: i, ticker: tickets[i].ticket, quote: tickets[i] });
+    setTimeout(() => broadcastData(i, tickets), 3000);
+}
 
 setInterval(async () => {
     main();
