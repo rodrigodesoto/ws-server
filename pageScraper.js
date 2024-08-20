@@ -46,7 +46,7 @@ const scraperObject = {
                
                 // Captura o valor do elemento
                 const name = await page.$eval(elementoBase+'div.ste-header > div > div.name-container > h3 > span.title-name', element => element.textContent.trim());
-                const valuePrice = await page.$eval(elementoBaseContainer+' > div.price-info > div > div.price-block.heading-2xl > span', element => element.textContent.trim());
+                const valuePrice = await page.$eval(elementoBaseContainer+' > div.price-info > div > div.price-block.heading-2xl', element => element.textContent.trim());
                 const valuePercent = await page.$eval(elementoBaseContainer+' > div.price-info > div > div.change-block.main-values > div > span', element => element.textContent.trim().replace('(', '').replace(')', '').replace('%', ''));
                 const campo = await page.$eval('#afnmainbodid > div.exchanges-page-container > div.two-col-row > div.col-one > div:nth-child(3) > div:nth-child(1) > div.delight-bordered-content > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(1)', element => element.textContent.trim());
                 let valueOpen = '';
