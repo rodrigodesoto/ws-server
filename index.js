@@ -1,6 +1,5 @@
 const app = require('./app');
 const appWs = require('./app-ws');
-const tickerEnum = require('./ticker-enum');
 const pageScraper = require('./pageScraper');
 let executando = false;
 
@@ -17,7 +16,7 @@ async function main() {
         try {   
            const startTime = Date.now();
            let endTime;
-           const  tickets = await pageScraper.scraper(tickerEnum);
+           const  tickets = await pageScraper.scraper();
 
             if(tickets.name != 'ProtocolError' && tickets.name != 'TimeoutError'){
 

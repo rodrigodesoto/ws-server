@@ -1,7 +1,51 @@
 const puppeteer = require('puppeteer');
+const axios = require('axios');
+
+
+async function auth() {
+    const url = process.env.url_b3_auth;
+    const data = {
+        email: process.env.user_b3,
+        password: process.env.pw_b3
+    };
+
+    let jwtToken = null;
+
+    await axios.post(url, data)
+        .then(response => {
+            jwtToken = response.data.jwtToken;
+            console.log('JWT Token:', jwtToken);
+        })
+        .catch(error => {
+            console.error('Erro ao autenticar:', error.response ? error.response.data : error.message);
+        });
+        
+    return jwtToken;
+}
+
+async function getAllStocks(jwtToken) {
+    const url = 'https://b3-api-backend.herokuapp.com/stocks/getAllStocks';
+    
+    try {
+      const response = await axios.get(url, {
+        headers: {
+          'accept': 'application/json',
+          'Authorization': `Bearer ${jwtToken}`
+        }
+      });
+      
+      // Retornando a lista de objetos stock
+      return response.data;
+      
+    } catch (error) {
+      console.error('Erro ao obter as ações:', error.response ? error.response.data : error.message);
+    }
+  }
 
 const scraperObject = {
-    async scraper(tickets) {
+    async scraper() {
+        const token = await auth();
+        const tickets = await getAllStocks(token);
         let usuario = 'rodrigochoucinodesoto'
         let senha = 'advfn77*'
         const urlLogin = 'https://br.advfn.com/common/account/login'
@@ -34,10 +78,10 @@ const scraperObject = {
             await page.click(`#afnmainbodid > div > div.content-row.login-page.row.w-100.m-0 > div.content-column-left.col-xl-6.col-lg-12.left.white-background.d-flex.flex-row-reverse > div > form > input.submit-button.btn.btn-primary`)
             await page.waitForNavigation()
             
-            for (let i = 0; i < Object.keys(tickets).length; i++) {
-                let tickerConversion = Object.values(tickets)[i].toString();
+            for (let i = 0; i < tickets.length; i++) {
+                const tickerConversion = tickets[i];
                 // Navega para a URL especificada
-                await page.goto('https://br.advfn.com/bolsa-de-valores/bovespa/'+tickerConversion+'/cotacao', { waitUntil: 'domcontentloaded' });
+                await page.goto('https://br.advfn.com/bolsa-de-valores/bovespa/'+tickerConversion.advfnCode+'/cotacao', { waitUntil: 'domcontentloaded' });
     
                 // Aguarda que o elemento esteja disponível na página
                 const elementoBase = '#afnmainbodid > div:nth-child(10) > div.quote-header-container > div.quote-header-left > div > div > ';

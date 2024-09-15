@@ -46,7 +46,7 @@ function verifyClient(info, callback) {
     const token = info.req.url.split('token=')[1];
 
     if (token) {
-        if (token === '123456')
+        if (token === process.env.token_ws)
             return callback(true);
     }
 

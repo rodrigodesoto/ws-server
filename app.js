@@ -1,6 +1,6 @@
 //arquivo de configuração da aplicação Express
 const express = require('express');
- 
+require('dotenv').config();
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(morgan('dev'));
  
 app.post('/login', (req, res, next) => {
-    res.json({ token: '123456' });
+    res.json({ token: process.env.token_ws });
 });
  
 module.exports = app;
