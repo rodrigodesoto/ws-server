@@ -14,7 +14,7 @@ async function auth() {
     await axios.post(url, data)
         .then(response => {
             jwtToken = response.data.jwtToken;
-            console.log('JWT Token:', jwtToken);
+            // console.log('JWT Token:', jwtToken);
         })
         .catch(error => {
             console.error('Erro ao autenticar:', error.response ? error.response.data : error.message);
@@ -107,7 +107,8 @@ const scraperObject = {
                 const timeTrading = await page.$eval(elementoBaseContainer+' > div.price-info > div > div.description-block > span', element => element.textContent.trim().substring(0,5));
     
                 let quote  = {};
-                quote['ticket'] = Object.keys(tickets)[i].toString();
+                quote['order'] = tickerConversion.order;
+                quote['ticket'] = tickerConversion.stockCode;
                 quote['name'] = name;
                 quote['price'] = valuePrice;
                 quote['marketChange'] = valuePercent;
