@@ -1,6 +1,6 @@
-const app = require('./app');
-const appWs = require('./app-ws');
-const pageScraper = require('./pageScraper');
+const app = require('./src/app/app');
+const appWs = require('./src/app/app-ws');
+const pageScraper = require('./src/scraper/pageScraper');
 let executando = false;
 
 const server = app.listen(process.env.PORT || 3000, () => {
