@@ -1,6 +1,7 @@
 const app = require('./src/app/app');
 const appWs = require('./src/app/app-ws');
 const pageScraper = require('./src/scraper/pageScraper');
+const pageScraperYahoo = require('./src/scraper/pageScraperYahoo');
 let executando = false;
 
 const server = app.listen(process.env.PORT || 3000, () => {
@@ -16,7 +17,7 @@ async function main() {
         try {   
            const startTime = Date.now();
            let endTime;
-           const  tickets = await pageScraper.scraper();
+           const  tickets = await pageScraperYahoo.scraper();
 
             if(tickets.name != 'ProtocolError' && tickets.name != 'TimeoutError'){
 
