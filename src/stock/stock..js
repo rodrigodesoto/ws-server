@@ -16,7 +16,8 @@ async function stock(){
         dtBuy: Date,
         dtUpdate: Date,
         order: Number,
-        advfnCode: String
+        advfnCode: String,
+        yahooCode: String
     };
 }
 
