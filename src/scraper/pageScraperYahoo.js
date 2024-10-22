@@ -48,7 +48,7 @@ const scraperObject = {
         const token = await auth();
         const tickets = await getAllStocks(token);
         // Iniciar o navegador e abrir uma nova página
-        const browser = await puppeteer.launch({ headless: true });
+        const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox','--disable-setuid-sandbox'] });
         const page = await browser.newPage();
 
         try {
