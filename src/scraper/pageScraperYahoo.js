@@ -114,11 +114,11 @@ const scraperObject = {
                 quote['order'] = ticket.order;
                 quote['ticket'] = ticket.stockCode;
                 quote['name'] = data.name;
-                quote['price'] = data.valuePrice;
-                quote['marketChange'] = data.valuePercent;
-                quote['open'] = data.valueOpen;
-                quote['low'] = data.valueMin;
-                quote['high'] = data.valueMax;
+                quote['price'] = data.valuePrice.substring(0, data.valuePrice.indexOf(',')+3);
+                quote['marketChange'] = data.valuePercent.substring(0, data.valuePercent.indexOf(',')+3);
+                quote['open'] = data.valueOpen.substring(0, data.valueOpen.indexOf(',')+3);
+                quote['low'] = data.valueMin.substring(0, data.valueMin.indexOf(',')+3);
+                quote['high'] = data.valueMax.substring(0, data.valueMax.indexOf(',')+3);
                 quote['stateTrading'] = data.dataFechamento;
                 quote['timeTrading'] = data.horaFechamento;
                 // console.log(data);
