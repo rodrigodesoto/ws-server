@@ -66,10 +66,10 @@ const scraperObject = {
                     };
 
                     const name = getText('#nimbus-app > section > section > section > article > section.container.yf-k4z9w > div.top.yf-k4z9w > div > div > section > h1');
-                    const valuePrice = getText('#nimbus-app > section > section > section > article > section.container.yf-k4z9w > div.bottom.yf-k4z9w > div.price.yf-k4z9w > section > div > section > div.container.yf-1tejb6 > fin-streamer.livePrice.yf-1tejb6 > span');
-                    const valuePercent = getText('#nimbus-app > section > section > section > article > section.container.yf-k4z9w > div.bottom.yf-k4z9w > div.price.yf-k4z9w > section > div > section > div.container.yf-1tejb6 > fin-streamer:nth-child(3) > span').replace('(','').replace('%)','');
-                    const valueOpen = getText('#nimbus-app > section > section > section > article > div.container.yf-dudngy > ul > li:nth-child(2) > span.value.yf-dudngy > fin-streamer');
-                    const daysRange = getText('#nimbus-app > section > section > section > article > div.container.yf-dudngy > ul > li:nth-child(5) > span.value.yf-dudngy > fin-streamer');
+                    const valuePrice = getText('#nimbus-app > section > section > section > article > section.container.yf-k4z9w > div.bottom.yf-k4z9w > div.price.yf-k4z9w > section > div > section > div.container.yf-1tejb6 > div:nth-child(1) > span');
+                    const valuePercent = getText('#nimbus-app > section > section > section > article > section.container.yf-k4z9w > div.bottom.yf-k4z9w > div.price.yf-k4z9w > section > div > section > div.container.yf-1tejb6 > div:nth-child(3) > span').replace('(','').replace('%)','');
+                    const valueOpen = getText('#nimbus-app > section > section > section > article > div.container.yf-gn3zu3 > ul > li:nth-child(2) > span.value.yf-gn3zu3 > fin-streamer');
+                    const daysRange = getText('#nimbus-app > section > section > section > article > div.container.yf-gn3zu3 > ul > li:nth-child(5) > span.value.yf-gn3zu3 > fin-streamer');
 
                     const [valueMin, valueMax] = daysRange ? daysRange.split(' - ') : [null, null];
 
