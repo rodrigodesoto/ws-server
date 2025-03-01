@@ -11,13 +11,12 @@ async function auth() {
 
     let jwtToken = null;
 
-    await axios.post(url, data)
-        .then(response => {
-            jwtToken = response.data.jwtToken;
-        })
-        .catch(error => {
-            console.error('Erro ao autenticar:', error.response ? error.response.data : error.message);
-        });
+    try {
+        const response = await axios.post(url, data);
+        jwtToken = response.data.jwtToken;
+    } catch (error) {
+        console.error('Erro ao autenticar:', error.response ? error.response.data : error.message);
+    }
 
     return jwtToken;
 }
@@ -44,7 +43,7 @@ const scraperObject = {
     async scraper() {
         const token = await auth();
         const tickets = await getAllStocks(token);
-        const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+        const browser = await puppeteer.launch({ headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox'] });
         const page = await browser.newPage();
 
         try {
@@ -58,6 +57,14 @@ const scraperObject = {
                     waitUntil: 'domcontentloaded',
                 });
 
+                // Aguarda um dos elementos principais da página para garantir que está carregada
+                try {
+                    await page.waitForSelector('h1', { timeout: 5000 });
+                } catch {
+                    console.warn(`Página de ${ticket.yahooCode} pode não ter carregado completamente.`);
+                    continue; 
+                }
+
                 // Capturar os valores desejados
                 const data = await page.evaluate((ticket) => {
                     const getText = (selector) => {
@@ -65,21 +72,29 @@ const scraperObject = {
                         return element ? element.innerText.trim() : null;
                     };
 
-                    const name = getText('#nimbus-app > section > section > section > article > section.container.yf-k4z9w > div.top.yf-k4z9w > div > div > section > h1');
-                    const valuePrice = getText('#nimbus-app > section > section > section > article > section.container.yf-k4z9w > div.bottom.yf-k4z9w > div.price.yf-k4z9w > section > div > section > div.container.yf-1tejb6 > div:nth-child(1) > span').replace('.',',');
-                    const valuePercent = getText('#nimbus-app > section > section > section > article > section.container.yf-k4z9w > div.bottom.yf-k4z9w > div.price.yf-k4z9w > section > div > section > div.container.yf-1tejb6 > div:nth-child(3) > span').replace('(','').replace('%)','').replace('+','').replace('.',',');
-                    const valueOpen = getText('#nimbus-app > section > section > section > article > div.container.yf-gn3zu3 > ul > li:nth-child(2) > span.value.yf-gn3zu3 > fin-streamer').replace('.',',');
-                    const daysRange = getText('#nimbus-app > section > section > section > article > div.container.yf-gn3zu3 > ul > li:nth-child(5) > span.value.yf-gn3zu3 > fin-streamer').replace('.',',').replace('.',',');
+                    const name = getText('#nimbus-app > section > section > section > article > section.container.yf-k4z9w > div.top.yf-k4z9w > div > div > section > h1'); // Seleciona o nome do ativo
+
+                    const priceSelector = '#nimbus-app > section > section > section > article > section.container.yf-k4z9w > div.bottom.yf-k4z9w > div.price.yf-k4z9w > section > div > section > div.container.yf-16vvaki > div:nth-child(1) > span';
+                    const valuePrice = getText(priceSelector)?.replace('.', ',') || null;
+
+                    const percentSelector = '#nimbus-app > section > section > section > article > section.container.yf-k4z9w > div.bottom.yf-k4z9w > div.price.yf-k4z9w > section > div > section > div.container.yf-16vvaki > div:nth-child(3) > span';
+                    const valuePercent = getText(percentSelector)?.replace('(', '').replace('%)', '').replace('+', '').replace('.', ',') || null;
+
+                    const openSelector = 'li:nth-child(2) > span.value > fin-streamer';
+                    const valueOpen = getText(openSelector)?.replace('.', ',') || null;
+
+                    const daysRangeSelector = 'li:nth-child(5) > span.value > fin-streamer';
+                    const daysRange = getText(daysRangeSelector)?.replace('.', ',') || null;
 
                     const [valueMin, valueMax] = daysRange ? daysRange.split(' - ') : [null, null];
 
-                    const marketNotice = getText('#nimbus-app > section > section > section > article > section.container.yf-k4z9w > div.bottom.yf-k4z9w > div.price.yf-k4z9w > section > div > section > div:nth-child(2) > span > span');
+                    const marketNotice = getText('div.marketTime > span > span');
                     const regexState = /Open/;
                     const descricaoFechamento = regexState.test(marketNotice) ? "Open" : "Close";
+
                     const regexHora = /(\d{1,2}):(\d{2})/;
-                    const match = marketNotice.match(regexHora);
+                    const match = marketNotice?.match(regexHora);
                     const horaFechamento = match ? match[0] : null;
-                    const dataFechamento = marketNotice ? marketNotice: null;
 
                     return {
                         name,
@@ -89,8 +104,7 @@ const scraperObject = {
                         valueMin,
                         valueMax,
                         descricaoFechamento,
-                        dataFechamento,
-                        horaFechamento,
+                        horaFechamento
                     };
                 }, ticket);
 
@@ -98,16 +112,15 @@ const scraperObject = {
                     order: ticket.order,
                     ticket: ticket.stockCode,
                     name: data.name ? data.name.split(' (')[0] : null,
-                    price: data.valuePrice.substring(0, data.valuePrice.indexOf(',')+3) || null,
+                    price: data.valuePrice ? data.valuePrice.substring(0, data.valuePrice.indexOf(',') + 3) : null,
                     marketChange: data.valuePercent || null,
                     open: data.valueOpen || null,
                     low: data.valueMin || null,
                     high: data.valueMax || null,
                     stateTrading: data.descricaoFechamento || "Desconhecido",
-                    timeTrading: data.dataFechamento ? data.horaFechamento : null,
+                    timeTrading: data.horaFechamento || null
                 };
-                // console.log(data.dataFechamento);
-                // console.log(data.horaFechamento);
+
                 arrTickets.push(quote);
             }
 
