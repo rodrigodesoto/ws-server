@@ -84,7 +84,7 @@ const scraperObject = {
                     const valueOpen = getText(openSelector)?.replace('.', ',') || null;
 
                     const daysRangeSelector = 'li:nth-child(5) > span.value > fin-streamer';
-                    const daysRange = getText(daysRangeSelector)?.replace('.', ',') || null;
+                    const daysRange = getText(daysRangeSelector)?.replaceAll('.', ',') || null;
 
                     const [valueMin, valueMax] = daysRange ? daysRange.split(' - ') : [null, null];
 
