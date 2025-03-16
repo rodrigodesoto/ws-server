@@ -72,13 +72,13 @@ const scraperObject = {
                         return element ? element.innerText.trim() : null;
                     };
 
-                    const name = getText('#nimbus-app > section > section > section > article > section.container.yf-k4z9w > div.top.yf-k4z9w > div > div > section > h1'); // Seleciona o nome do ativo
+                    const name = getText('#nimbus-app > section > section > section > article > section.container.yf-5hy459 > div.top.yf-5hy459 > div > div.left.yf-5hy459.wrap > section > h1'); // Seleciona o nome do ativo
 
-                    const priceSelector = 'fin-streamer[data-field="regularMarketPrice"]';
+                    const priceSelector = '#nimbus-app > section > section > section > article > section.container.yf-5hy459 > div.bottom.yf-5hy459 > div.price.yf-5hy459 > section > div > section > div.container.yf-16vvaki > div:nth-child(1) > span';
                     const valuePrice = getText(priceSelector)?.replace('.', ',') || null;
 
-                    const percentSelector = 'fin-streamer[data-field="regularMarketChangePercent"]';
-                    const valuePercent = getText(percentSelector)?.replace('(', '').replace('%)', '').replace('+', '').replace('.', ',') || null;
+                    const percentSelector = '#nimbus-app > section > section > section > article > section.container.yf-5hy459 > div.bottom.yf-5hy459 > div.price.yf-5hy459 > section > div > section > div.container.yf-16vvaki > div:nth-child(3) > span';
+                    const valuePercent = getText(percentSelector)?.replace('(', '').replaceAll('%)', '').replaceAll('+', '').replaceAll('.', ',') || null;
 
                     const openSelector = 'li:nth-child(2) > span.value > fin-streamer';
                     const valueOpen = getText(openSelector)?.replace('.', ',') || null;
