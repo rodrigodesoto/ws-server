@@ -75,12 +75,12 @@ const scraperObject = {
                         return element ? element.innerText.trim() : null;
                     };
 
-                    const name = getText('#nimbus-app > section > section > section > article > section.container.yf-5hy459 > div.top.yf-5hy459 > div > div.left.yf-5hy459.wrap > section > h1'); // Seleciona o nome do ativo
+                    const name = getText('#nimbus-app > section > section > section > article > section.container.yf-4vs57a > div.top.yf-4vs57a > div > div.left.yf-4vs57a.wrap > section > h1'); // Seleciona o nome do ativo
 
-                    const priceSelector = '#nimbus-app > section > section > section > article > section.container.yf-5hy459 > div.bottom.yf-5hy459 > div.price.yf-5hy459 > section > div > section > div.container.yf-16vvaki > div:nth-child(1) > span';
+                    const priceSelector = '#nimbus-app > section > section > section > article > section.container.yf-4vs57a > div.bottom.yf-4vs57a > div.price.yf-4vs57a > section > div > section > div.container.yf-16vvaki > div:nth-child(1) > span';
                     const valuePrice = getText(priceSelector)?.replace('.', ',') || null;
 
-                    const percentSelector = '#nimbus-app > section > section > section > article > section.container.yf-5hy459 > div.bottom.yf-5hy459 > div.price.yf-5hy459 > section > div > section > div.container.yf-16vvaki > div:nth-child(3) > span';
+                    const percentSelector = '#nimbus-app > section > section > section > article > section.container.yf-4vs57a > div.bottom.yf-4vs57a > div.price.yf-4vs57a > section > div > section > div.container.yf-16vvaki > div:nth-child(3) > span';
                     const valuePercent = getText(percentSelector)?.replace('(', '').replaceAll('%)', '').replaceAll('+', '').replaceAll('.', ',') || null;
 
                     const openSelector = 'li:nth-child(2) > span.value > fin-streamer';
@@ -91,7 +91,8 @@ const scraperObject = {
 
                     const [valueMin, valueMax] = daysRange ? daysRange.split(' - ') : [null, null];
 
-                    const marketNotice = getText('div.marketTime > span > span');
+                    const marketNoticeSelector = '#nimbus-app > section > section > section > article > section.container.yf-4vs57a > div.bottom.yf-4vs57a > div.price.yf-4vs57a > section > div > section > div.yf-12ejch4 > span > span';
+                    const marketNotice = getText(marketNoticeSelector)
                     const regexState = /Open/;
                     const descricaoFechamento = regexState.test(marketNotice) ? "Open" : "Close";
 
